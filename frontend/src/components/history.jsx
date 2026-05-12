@@ -18,7 +18,7 @@ import { saveAs } from 'file-saver';
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import { format, isWithinInterval } from 'date-fns';
 
-const API_BASE_URL = 'http://10.68.38.17/api';
+const API_BASE_URL = 'http://10.68.163.2/api';
 
 const columns = [
   { name: 'Date', selector: row => row.planification_date || '—', width: '110px', sortable: true },

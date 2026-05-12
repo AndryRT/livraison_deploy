@@ -7,7 +7,7 @@ import '../styles/Livraison.css';
 // ========================================
 // CONSTANTES
 // ========================================
-const API_BASE_URL = 'http://10.68.38.17/api';
+const API_BASE_URL = 'http://10.68.163.2/api';
 const PAGINATION_OPTIONS = {
   rowsPerPageText: 'Lignes par page:',
   rangeSeparatorText: 'de',

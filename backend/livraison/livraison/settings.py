@@ -64,7 +64,7 @@ GCP_LOCATION = os.getenv('GCP_LOCATION', 'us-central1')
 DEBUG = True
 
 # In production, you should replace '*' with your actual domain names.
-ALLOWED_HOSTS = ['10.68.163.2', '10.68.38.18', '10.68.38.17', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['10.68.163.2', '10.68.38.18', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -97,29 +97,27 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://10.68.163.2",
+    "http://10.68.163.2:3000",
+    "http://10.68.163.2:8081",
+    "http://10.68.163.2:5173",
     "http://10.68.38.18:3000",
-    "http://10.68.38.17:3000",
-    "http://10.68.38.17",
+    "http://10.68.38.18:8081",
+    "http://10.68.38.18:5173",
     "http://localhost:3000",
     "http://localhost",
     "http://localhost:8081",
-    "http://10.68.38.18:8081",
-    "http://10.68.38.17:8081",
-    "http://10.68.38.17:5173",
-    "http://10.68.38.18:5173",
-    
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://10.68.163.2",
+    "http://10.68.163.2:3000",
+    "http://10.68.163.2:8081",
+    "http://10.68.163.2:5173",
     "http://10.68.38.18:3000",
     "http://10.68.38.18:8081",
-    "http://10.68.38.17:3000",
-    "http://10.68.38.17",
+    "http://10.68.38.18:5173",
     "http://localhost:3000",
     "http://localhost",
-    "http://10.68.38.17:5173",
-    "http://10.68.38.18:5173",
 ]
 CORS_ALLOW_CREDENTIALS = True
 

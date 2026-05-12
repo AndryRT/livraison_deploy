@@ -7,7 +7,7 @@ import { saveAs } from 'file-saver';
 import { format, isWithinInterval } from 'date-fns';
 import '../styles/Livraison.css';
 
-const API_BASE_URL = 'http://10.68.38.17/api';
+const API_BASE_URL = 'http://10.68.163.2/api';
 
 const PAGINATION_OPTIONS = {
   rowsPerPageText: 'Lignes par page:',

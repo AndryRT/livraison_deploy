@@ -53,7 +53,7 @@ const Login = ({ onLoginSuccess }) => {
         setIdError('');
 
         try {
-            const response = await axios.post('http://10.68.38.17//api/token/', {
+            const response = await axios.post('http://10.68.163.2/api/token/', {
             username: identifier,
             password: password,
             });
