@@ -217,6 +217,9 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Credentials / Secrets
+backend/clé-viseo-env-prod-0afc5f090e0f.json
+
 # React / Node.js
 node_modules/
 build/
