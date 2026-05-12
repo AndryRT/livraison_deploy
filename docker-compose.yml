@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   frontend:
     build:
@@ -10,7 +12,7 @@ services:
     environment:
       - NODE_ENV=development
 
-  backend_django:
+  backend-django:
     build:
       context: ./backend/livraison
     volumes:
@@ -19,7 +21,7 @@ services:
       - "8000:8000"
     command: python manage.py runserver 0.0.0.0:8000
 
-  backend_fastapi:
+  backend-fastapi:
     build:
       context: ./backend/match_position
     volumes:
@@ -27,6 +29,15 @@ services:
     ports:
       - "8001:8001"
     command: uvicorn main:app --host 0.0.0.0 --port 8001
+
+  reporting-worker:
+    build:
+      context: ./backend/match_position
+    volumes:
+      - ./backend/match_position:/app
+    command: python reporting/schedule_request.py
+    depends_on:
+      - mongodb
 
   mongodb:
     image: mongo:latest
@@ -53,8 +64,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - frontend
-      - backend_django
-      - backend_fastapi
+      - backend-django
+      - backend-fastapi
 
 volumes:
   mongodb_data:
