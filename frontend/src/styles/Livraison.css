@@ -1,0 +1,617 @@
+/* Livraison.css - Optimisé avec préfixes */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.livraison-container {
+  display: flex;
+  height: 92vh;
+  gap: 25px;
+  padding: 25px;
+  background: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* SECTIONS */
+.livraison-left-section, .livraison-right-section {
+  flex: 1;
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  height: 100%;
+}
+
+/* Loader et overlay de chargement */
+.livraison-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.livraison-loading-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.livraison-loading-content p {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Animation de rotation pour le loader */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Bouton désactivé pendant le chargement */
+.livraison-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Style pour le bouton warning (Livraison réussie) */
+.livraison-btn-warning {
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.livraison-btn-warning:hover {
+  background-color: #ffb300;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+.livraison-section-card, .livraison-map-container, .livraison-details-container {
+  background: white;
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  padding: 30px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.livraison-section-card:hover, .livraison-map-container:hover, .livraison-details-container:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* PLEIN ÉCRAN */
+.livraison-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f8f9fa;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.livraison-section-card.livraison-fullscreen, 
+.livraison-map-container.livraison-fullscreen, 
+.livraison-details-container.livraison-fullscreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  margin: 0;
+  z-index: 9995;
+  padding: 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* PAGINATION FORCÉE - VISIBLE EN BAS */
+.livraison-section-card.livraison-fullscreen .rdt_Pagination,
+.livraison-details-container.livraison-fullscreen .rdt_Pagination {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: white !important;
+  border-top: 2px solid #e1e4e8 !important;
+  padding: 16px !important;
+  min-height: 70px !important;
+}
+
+/* Cacher la navbar en mode plein écran */
+body.livraison-fullscreen-active .navbar,
+body.livraison-fullscreen-active nav,
+body.livraison-fullscreen-active header {
+  display: none !important;
+}
+
+.livraison-fullscreen-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: white;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4b5563;
+  transition: all 0.2s ease;
+  z-index: 100;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.livraison-fullscreen-btn:hover {
+  background: #f3f4f6;
+  border-color: #6b7280;
+  transform: scale(1.08);
+  border: 1px solid #d1d5db;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.livraison-fullscreen-btn:active { transform: scale(0.98); }
+
+.livraison-fullscreen-btn svg { width: 12px; height: 12px; stroke-width: 2.5; color: #10b981; }
+
+.livraison-section-title {
+  margin: 0 0 15px 0;
+  color: #1f2937;
+  font-size: 1.3em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.livraison-section-title svg { color: #4b5563; flex-shrink: 0; stroke-width: 2; }
+
+/* BOUTONS */
+.livraison-btn {
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  height: 41px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -6px;
+}
+
+.livraison-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.livraison-btn:active { transform: translateY(0); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+
+.livraison-btn-primary {
+  background: #374151;
+  color: white;
+  border-color: #374151;
+  white-space: nowrap;
+}
+
+.livraison-btn-primary:hover { background: #4b5563; border-color: #4b5563; }
+
+.livraison-btn-success { background: #10b981; color: white; border-color: #10b981; }
+
+.livraison-btn-success:hover { background: #059669; border-color: #059669; }
+
+.livraison-btn-container-right { text-align: right; margin-top: 25px; }
+
+/* FILTRE */
+.livraison-filter-container {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.livraison-filter-input {
+  flex: 1;
+  padding: 8px 35px 8px 12px;
+  font-size: 13px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  background: white;
+}
+
+.livraison-filter-input:focus { border-color: #9ca3af; box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.1); }
+
+.livraison-filter-input::placeholder { color: #9ca3af; }
+
+.livraison-clear-filter-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  z-index: 1;
+}
+
+.livraison-clear-filter-btn:hover { background: #e5e7eb; color: #374151; }
+
+/* DATATABLE */
+.livraison-datatable-wrapper {
+  margin-top: 15px;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.livraison-datatable-wrapper .rdt_Table { 
+  border: 1px solid #e1e4e8; 
+  border-radius: 8px; 
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.livraison-datatable-wrapper .rdt_TableHead {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  background: #f9fafb !important;
+}
+
+.livraison-datatable-wrapper .rdt_TableBody { flex: 1; overflow: auto; }
+
+.livraison-datatable-wrapper .rdt_Pagination { 
+  flex-shrink: 0; 
+  background: white; 
+  border-top: 1px solid #e1e4e8; 
+  margin-top: auto;
+}
+
+.livraison-datatable-wrapper .rdt_TableHeadRow { background: #f9fafb !important; border-bottom: 1px solid #e1e4e8; }
+
+.livraison-datatable-wrapper .rdt_TableRow { border-bottom: 1px solid #f3f4f6; transition: all 0.2s ease; }
+
+.livraison-datatable-wrapper .rdt_TableRow:hover { background: #f9fafb !important; }
+
+.livraison-datatable-wrapper .rdt_TableCell { text-align: left !important; color: #374151; }
+
+.livraison-datatable-wrapper .rdt_TableCol { text-align: left !important; color: #6b7280; font-weight: 500; }
+
+.livraison-vehicle-details-table { flex: 1; }
+
+/* VÉHICULES */
+.livraison-vehicles-list { margin-top: 20px; flex: 1; overflow-y: auto; }
+
+.livraison-vehicle-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  margin: 12px 0;
+  background: white;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  width: 98%;
+  height: 17%;
+}
+
+.livraison-vehicle-item:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+  transform: translateX(4px);
+  box-shadow: 0 3px 8px rgba(235, 226, 226, 0.08);
+}
+
+.livraison-vehicle-item.livraison-selected {
+  border-color: #6b7280;
+  background: #f9fafb;
+  box-shadow: 0 3px 10px rgba(235, 226, 226, 0.08);
+}
+
+.livraison-vehicle-name { font-weight: 500; font-size: 16px; color: #1f2937; }
+
+.livraison-vehicle-status {
+  font-size: 12px;
+  background: #4b5563;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* CARTE - MAP SECTION */
+.livraison-map-container {
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: center;
+  background: #f9fafb;
+  position: relative;
+  overflow-y: auto;
+}
+
+.livraison-map-placeholder { 
+  width: 100%;
+  color: #1f2937; 
+  font-size: 18px; 
+  z-index: 2; 
+  position: relative; 
+}
+
+.livraison-map-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.livraison-map-icon-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fef3f3 0%, #ffe5e5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(196, 38, 38, 0.15);
+  transition: all 0.3s ease;
+}
+
+.livraison-map-icon-circle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(196, 38, 38, 0.2);
+}
+
+.livraison-map-icon { color: #c42626ff; stroke-width: 2; }
+
+.livraison-map-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.livraison-map-locations-wrapper {
+  width: 100%;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.livraison-map-locations-header {
+  margin-bottom: 15px;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  border-bottom: 2px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+}
+
+.livraison-map-locations-list { list-style: none; padding: 0; margin: 0; }
+
+.livraison-map-location-item {
+  padding: 14px 16px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.livraison-map-location-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  border-color: #9ca3af;
+}
+
+.livraison-map-location-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #4b5563;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.livraison-map-location-content { flex: 1; min-width: 0; }
+
+.livraison-map-location-address {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 5px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.livraison-map-location-details {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.livraison-map-location-client { font-weight: 500; }
+.livraison-map-location-separator { color: #d1d5db; }
+
+.livraison-map-location-order {
+  padding: 2px 8px;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.livraison-map-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.livraison-map-empty-icon { opacity: 0.3; margin-bottom: 16px; color: #6b7280; }
+.livraison-map-empty-text { margin: 0; font-size: 14px; color: #9ca3af; }
+
+/* ALERTES */
+.livraison-custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 350px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.livraison-alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.livraison-alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.livraison-alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+
+.livraison-alert-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.livraison-alert-icon { margin-right: 8px; font-size: 18px; font-weight: bold; flex-shrink: 0; }
+.livraison-alert-message { font-size: 14px; line-height: 1.4; }
+.livraison-alert-show { animation: slideInRight 0.3s ease-out forwards; }
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.livraison-custom-alert:not(.livraison-alert-show) { animation: slideOutRight 0.3s ease-in forwards; }
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .livraison-container { flex-direction: column; gap: 20px; padding: 20px; }
+  .livraison-left-section, .livraison-right-section { height: auto; }
+  .livraison-section-card, .livraison-map-container, .livraison-details-container { height: 300px; }
+  .livraison-fullscreen-btn { top: 12px; right: 12px; width: 36px; height: 36px; }
+  .livraison-fullscreen-btn svg { width: 16px; height: 16px; }
+}
+
+@media (max-width: 768px) {
+  .livraison-container { padding: 15px; }
+  .livraison-section-card, .livraison-map-container, .livraison-details-container { padding: 20px; height: 250px; border-radius: 10px; }
+  .livraison-btn { padding: 8px 14px; font-size: 12px; border-radius: 6px; }
+  .livraison-vehicle-item { border-radius: 8px; }
+  .livraison-fullscreen-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f8f9fa; z-index: 9990; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .livraison-fullscreen-btn { top: 10px; right: 10px; width: 34px; height: 34px; }
+  .livraison-fullscreen-btn svg { width: 15px; height: 15px; }
+  .livraison-section-title { font-size: 1.2em; }
+  .livraison-filter-container { flex-direction: column; gap: 8px; }
+  .livraison-clear-filter-btn { right: 10px; }
+  .livraison-custom-alert { top: 10px; right: 10px; max-width: 300px; }
+  .livraison-map-icon-circle { width: 60px; height: 60px; }
+  .livraison-map-title { font-size: 18px; }
+  .livraison-map-locations-wrapper { max-width: 100%; }
+  .livraison-map-location-item { padding: 12px 14px; }
+}
+
+@media (max-width: 480px) {
+  .livraison-btn { width: 100%; margin-bottom: 10px; }
+  .livraison-btn-container-right { text-align: center; }
+  .livraison-section-card { padding: 15px; }
+  .livraison-fullscreen-overlay { padding: 5px; }
+  .livraison-fullscreen-btn { top: 8px; right: 8px; width: 32px; height: 32px; }
+  .livraison-fullscreen-btn svg { width: 14px; height: 14px; }
+  .livraison-section-title { font-size: 1.1em; gap: 8px; }
+  .livraison-section-title svg { width: 18px; height: 18px; }
+  .livraison-filter-container { flex-direction: column; }
+  .livraison-clear-filter-btn { right: 10px; }
+  .livraison-custom-alert { top: 5px; right: 5px; max-width: 280px; }
+  .livraison-alert-content { padding: 10px 12px; }
+  .livraison-alert-message { font-size: 13px; }
+  .livraison-map-icon-circle { width: 50px; height: 50px; }
+  .livraison-map-title { font-size: 16px; margin-bottom: 20px; }
+  .livraison-map-location-address { font-size: 14px; }
+}

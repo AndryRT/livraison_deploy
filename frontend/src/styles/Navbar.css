@@ -1,0 +1,518 @@
+/* Navbar.css */
+.navbar-logo {
+  max-height: 150%;
+  position: absolute;
+  left: 2%;
+}
+
+.navbar {
+  background: #ffff;
+  border-bottom: 1px solid #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0;
+  height: 60px;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem 0 2rem;
+  height: 100%;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-right: auto;
+  padding-right: 3rem;
+  height: 100%;
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+  flex: 1;
+  justify-content: center;
+  max-width: 600px;
+  position: absolute;
+  left: 13%;
+}
+
+.navbar-item {
+  position: relative;
+}
+
+.navbar-link {
+  color: #666;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+  font-size: 1rem;
+  display: block;
+  white-space: nowrap;
+}
+
+.navbar-link:hover {
+  color: #333;
+}
+
+.navbar-link.active {
+  color: #000;
+  font-weight: 600;
+}
+
+/* ===== MENU PROFIL AVEC DROPDOWN ===== */
+.navbar-profile {
+  position: absolute;
+  right: 4%;
+}
+
+.profile-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #374151;
+  color: white;
+  border-color: #374151;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.profile-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.profile-btn:active {
+  transform: scale(0.98);
+}
+
+/* Dropdown */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  overflow: hidden;
+  animation: dropdownSlide 0.2s ease-out;
+  z-index: 1001;
+}
+
+.profile-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  transform: rotate(45deg);
+  box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: white;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.dropdown-item:active {
+  background: #e5e7eb;
+}
+
+.dropdown-item + .dropdown-item {
+  border-top: 1px solid #f3f4f6;
+}
+
+.logout-item {
+  color: #ef4444;
+}
+
+.logout-item:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== MODALE DE DÉCONNEXION ===== */
+.logout-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+
+.logout-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  min-width: 420px;
+  max-width: 500px;
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+.logout-modal-header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(to bottom, #ffffff, #f9fafb);
+}
+
+.logout-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.logout-modal-body {
+  padding: 28px 24px;
+  background: white;
+}
+
+.logout-modal-body p {
+  margin: 0;
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.logout-modal-footer {
+  padding: 16px 24px 20px 24px;
+  background-color: #f9fafb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.logout-modal-btn {
+  padding: 11px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.cancel-btn {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.cancel-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.cancel-btn:active {
+  transform: scale(0.98);
+}
+
+.confirm-btn {
+  background-color: #ef4444;
+  color: white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.confirm-btn:hover {
+  background-color: #dc2626;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.confirm-btn:active {
+  transform: scale(0.98);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Écrans moyens/laptops (1200px et moins) */
+@media (max-width: 1200px) {
+  .navbar-container {
+    max-width: 100%;
+    padding: 0 2rem;
+  }
+
+  .navbar-brand {
+    padding-right: 2rem;
+  }
+
+  .navbar-profile {
+    padding-left: 2rem;
+  }
+
+  .navbar-menu {
+    gap: 1.2rem;
+  }
+
+  .navbar-link {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.7rem;
+  }
+}
+
+/* Écrans moyens (900px et moins) */
+@media (max-width: 900px) {
+  .navbar-container {
+    padding: 0.5rem 1.5rem;
+  }
+
+  .navbar-brand {
+    padding-right: 1.5rem;
+  }
+
+  .navbar-profile {
+    padding-left: 1.5rem;
+  }
+
+  .navbar-menu {
+    gap: 1rem;
+  }
+
+  .navbar-link {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .navbar-logo {
+    height: 60px;
+  }
+}
+
+/* Tablettes (768px et moins) */
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    min-height: 60px;
+  }
+
+  .navbar-container {
+    flex-wrap: wrap;
+    padding: 0.6rem 1rem;
+    gap: 0.8rem;
+    height: auto;
+  }
+
+  .navbar-brand {
+    order: 1;
+    flex: 0 0 auto;
+    height: auto;
+  }
+
+  .navbar-profile {
+    order: 2;
+    flex: 0 0 auto;
+  }
+
+  .navbar-menu {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 0.8rem;
+    padding-top: 0.4rem;
+  }
+
+  .navbar-link {
+    font-size: 0.88rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .navbar-logo {
+    height: 48px;
+  }
+
+  .profile-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logout-modal {
+    min-width: 85%;
+    max-width: 85%;
+    margin: 0 1rem;
+  }
+}
+
+/* Petits écrans (600px et moins) */
+@media (max-width: 600px) {
+  .navbar-container {
+    padding: 0.6rem 0.8rem;
+    gap: 0.6rem;
+  }
+
+  .navbar-menu {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .navbar-link {
+    font-size: 0.82rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .navbar-logo {
+    height: 44px;
+  }
+
+  .profile-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .logout-modal {
+    min-width: 92%;
+    max-width: 92%;
+  }
+
+  .logout-modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .logout-modal-btn {
+    width: 100%;
+  }
+}
+
+/* Très petits écrans (480px et moins) */
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .navbar-menu {
+    gap: 0.3rem;
+  }
+
+  .navbar-link {
+    font-size: 0.78rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .navbar-logo {
+    height: 40px;
+  }
+
+  .profile-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .logout-modal {
+    min-width: 95%;
+  }
+
+  .logout-modal-header {
+    padding: 20px 18px 14px 18px;
+  }
+
+  .logout-modal-header h3 {
+    font-size: 18px;
+  }
+
+  .logout-modal-body {
+    padding: 24px 18px;
+  }
+
+  .logout-modal-body p {
+    font-size: 15px;
+  }
+
+  .logout-modal-footer {
+    padding: 14px 18px 18px 18px;
+  }
+}
+
+/* Mini écrans (360px et moins) */
+@media (max-width: 360px) {
+  .navbar-link {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.3rem;
+  }
+
+  .navbar-logo {
+    height: 36px;
+  }
+
+  .navbar-menu {
+    gap: 0.2rem;
+  }
+}
