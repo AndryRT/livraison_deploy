@@ -35,8 +35,10 @@ oauth2_scheme = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://mongodb:27017')
+
 def get_db_collection(name: str):
-    client = MongoClient('mongodb://127.0.0.1:27017')
+    client = MongoClient(MONGO_URI)
     return client['livraison'][name]
 
 class UserCreate(BaseModel):
