@@ -1,0 +1,3 @@
+intervalle de service: IC
+IC=[3,24]
+mediane=8
