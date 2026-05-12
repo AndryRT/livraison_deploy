@@ -10,7 +10,7 @@ def find_incompatibilities_for_df():
     Charge et transforme la matrice de compatibilité depuis MongoDB, en gérant les structures de données plates et imbriquées.
     """
     try:
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://mongodb:27017/')
         db = client['livraison']
         collection = db['compatiblity']
         data = list(collection.find({}, {'_id': 0}))

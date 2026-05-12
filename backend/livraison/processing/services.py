@@ -123,7 +123,7 @@ def ping_fastapi():
 
 def save_final_data(response):
     df = pd.DataFrame(response["data"])
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb://mongodb:27017/")
     coll = client.livraison.article
     for rec in df.to_dict('records'):
         coll.update_one({"ref_produit": rec["ref_produit"]}, {"$set": rec}, upsert=True)
@@ -144,7 +144,7 @@ def generate_articles():
     period = 'am' if hour < 12 or (hour == 12 and minute == 0) else 'pm'
 
     # Connexion à MongoDB
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb://mongodb:27017/")
     db = client["livraison"]
     articles_collection = db["article"]
     adresses_collection = db["adress"]
@@ -580,7 +580,7 @@ def filter_products_by_date_and_period():
             "state": "draft",
             "period": period_filter
         }
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://mongodb:27017/')
         db = client['livraison']
         collection = db['article']
         results = collection.find(query)
@@ -689,7 +689,7 @@ def parallel_process_dataframe(df, max_workers=4):
     return df
 
 def migrate_fix_metrics_array():
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient('mongodb://mongodb:27017/')
     db = client['livraison']
     collection = db['article']
     # Corriger les docs où Metrics est un objet et non un tableau
@@ -806,7 +806,7 @@ def fetch_odoo_data():
         if field in df.columns:
             df[field] = df[field].replace([None, np.nan], '')
             df[field] = df[field].apply(lambda x: '' if isinstance(x, list) and len(x) == 0 else x)
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient('mongodb://mongodb:27017/')
     db = client['livraison']
     collection = db['article']
     

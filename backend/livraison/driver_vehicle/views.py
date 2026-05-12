@@ -28,7 +28,7 @@ def get_data_react(request):
     date = request.data.get('date', datetime.now().strftime('%Y-%m-%d'))
     if not isinstance(vehicules_disponibles, list):
         return Response({"error": "vehicules_disponibles doit être une liste"}, status=400)
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient('mongodb://mongodb:27017/')
     db = client['livraison']
     collection = db.vehicules_disponibles_frontend
     collection.delete_many({})
@@ -152,7 +152,7 @@ def modifier_vehicule(request, pk):
 @permission_classes([IsAuthenticated])
 def get_vehicle_active(request):
     try:
-        client = MongoClient('mongodb://localhost:27017/') 
+        client = MongoClient('mongodb://mongodb:27017/') 
         db = client['livraison']
         collection = db['vehicules']
  

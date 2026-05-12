@@ -13,7 +13,7 @@ from typing import List, Dict, Any
 
 def get_vehicle_data_json():
     try:
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://mongodb:27017/')
         db = client['livraison']
         collection = db.vehicules_disponibles_frontend
         documents = collection.find({}, {"_id": 0, "vehicules_disponibles": 1})
@@ -41,7 +41,7 @@ def _parse_metric(metric):
 def get_full_article_data():
     client = None
     try:
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://mongodb:27017/')
         db = client['livraison']
         collection = db['article']
 

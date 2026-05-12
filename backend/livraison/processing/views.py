@@ -122,7 +122,7 @@ def insert_to_mongodb(records, db_name='livraison', collection_name='articles'):
     """
     start_time = time.time()
     try:
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://mongodb:27017/')
         db = client[db_name]
         collection = db[collection_name]
         if records:

@@ -5,7 +5,7 @@ lock = threading.Lock()
 
 def get_all_product_history():
     try:
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://mongodb:27017/')
         db = client['livraison']
         collection = db['article']
         documents = list(collection.find({"state": "done"}))
@@ -26,7 +26,7 @@ def lire_json():
     """
     with lock:
         try:
-            client = MongoClient('mongodb://localhost:27017/')
+            client = MongoClient('mongodb://mongodb:27017/')
             db = client['livraison']
             collection = db['vehicules']
             documents = list(collection.find())
@@ -50,7 +50,7 @@ def ecrire_json(data):
     """
     with lock:
         try:
-            client = MongoClient('mongodb://localhost:27017/')
+            client = MongoClient('mongodb://mongodb:27017/')
             db = client['livraison']
             collection = db['vehicules']
             
@@ -95,7 +95,7 @@ def lire_vehicules_actifs():
     """
     with lock:
         try:
-            client = MongoClient('mongodb://localhost:27017/')
+            client = MongoClient('mongodb://mongodb:27017/')
             db = client['livraison']
             collection = db['vehicules']
             documents = list(collection.find({"active": True}))

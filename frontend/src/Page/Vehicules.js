@@ -6,7 +6,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import { Trash, Pencil, ShieldCheck, X, Plus } from 'lucide-react';
 import '../styles/Vehicules.css';
 
-const API_BASE = '/api/livraison/vehicules';
+const API_BASE = '/api/vehicules';
 
 const INITIAL_VEHICLE = {
   Vehicule: '', Type: '', Immatriculation: '', Tonnage: '', 
