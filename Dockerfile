@@ -5,29 +5,29 @@ RUN npm install
 COPY ./frontend/ .
 RUN npm run build
 
-FROM python:3.9-slim AS django-build
+FROM python:3.11-slim AS django-build
 WORKDIR /app
 COPY ./backend/livraison/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./backend/livraison/ .
 
-FROM python:3.9-slim AS fastapi-build
+FROM python:3.11-slim AS fastapi-build
 WORKDIR /app
 COPY ./backend/match_position/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./backend/match_position/ .
 
-FROM python:3.9-slim
+FROM python:3.11-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
 COPY --from=react-build /app/react/build /var/www/html
 
-COPY --from=django-build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=django-build /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=django-build /app /app/django
 
-COPY --from=fastapi-build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=fastapi-build /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=fastapi-build /app /app/fastapi
 
 COPY nginx/nginx-single.conf /etc/nginx/sites-available/default
