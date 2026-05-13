@@ -13,8 +13,7 @@ import {
   Paper,
 } from '@mui/material';
 import axios from 'axios';
-
-const API_BASE_URL = 'http://10.68.163.2/api';
+import API_BASE_URL from '../config';
 
 const columns = [
   {

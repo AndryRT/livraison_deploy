@@ -4,10 +4,10 @@ import DataTable from 'react-data-table-component';
 import { Package, Truck, MapPin, Info, Maximize2, X, Loader } from 'lucide-react';
 import axios from 'axios';
 import '../styles/Livraison.css';
+import API_BASE_URL from '../config';
 // ========================================
 // CONSTANTES
 // ========================================
-const API_BASE_URL = 'http://10.68.163.2/api';
 const PAGINATION_OPTIONS = {
   rowsPerPageText: 'Lignes par page:',
   rangeSeparatorText: 'de',

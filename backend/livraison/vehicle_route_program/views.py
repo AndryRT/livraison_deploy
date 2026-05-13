@@ -13,10 +13,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from bson import ObjectId
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 eat_tz = pytz.timezone('Africa/Nairobi')
-FASTAPI_URL = "http://10.68.163.2/android"
+FASTAPI_URL = os.getenv("FASTAPI_URL", "http://10.68.163.2/android")
 API_SECRET_KEY = "viseo2025_UltraSecretKey_9x8k2m4z_PleaseChangeMe"
 client = MongoClient('mongodb://mongodb:27017')
 db = client['livraison']

@@ -209,6 +209,9 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# IP config locale (ignorée pendant le push)
+IP/ip_local.js
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

@@ -6,8 +6,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { format, isWithinInterval } from 'date-fns';
 import '../styles/Livraison.css';
-
-const API_BASE_URL = 'http://10.68.163.2/api';
+import API_BASE_URL from '../config';
 
 const PAGINATION_OPTIONS = {
   rowsPerPageText: 'Lignes par page:',

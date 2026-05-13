@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import logo from '../assets/logo/logo_viseo.jpeg';
 import { Link, useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config';
 
 const Login = ({ onLoginSuccess }) => {
     const [identifier, setIdentifier] = useState('');
@@ -53,7 +54,7 @@ const Login = ({ onLoginSuccess }) => {
         setIdError('');
 
         try {
-            const response = await axios.post('http://10.68.163.2/api/token/', {
+            const response = await axios.post(`${API_BASE_URL}/token/`, {
             username: identifier,
             password: password,
             });
