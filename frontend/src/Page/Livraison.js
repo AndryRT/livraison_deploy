@@ -60,7 +60,7 @@ const getAuthToken = () => {
   return token;
 };
 
-const filterData = (data, searchText, fields) => {
+export const filterData = (data, searchText, fields) => {
   const lower = searchText.toLowerCase();
   return data.filter(item => fields.some(field => item[field] && item[field].toString().toLowerCase().includes(lower)));
 };

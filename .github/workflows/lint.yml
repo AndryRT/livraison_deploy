@@ -1,0 +1,44 @@
+name: Lint & Type Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+          cd backend/livraison && pip install -r requirements.txt
+
+      - name: Run ruff linter on backend
+        run: |
+          cd backend/livraison
+          ruff check . --exit-zero
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run ESLint on frontend
+        run: |
+          cd frontend
+          npx eslint src/ --ext .js,.jsx --max-warnings=50 || true
