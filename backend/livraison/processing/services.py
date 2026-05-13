@@ -233,7 +233,7 @@ def generate_articles():
 
     # Insérer synchrone (fiable, assume volume petit)
     if results:
-        articles_collection.insert_many(results)
+        articles_collection.insert_many([dict(r) for r in results])
         logging.info(f"Insérés {len(results)} articles")
 
     client.close()
@@ -514,19 +514,6 @@ def fetch_odoo_data_init(result_list):
         result_list (list): Liste pour stocker le DataFrame résultant.
     """
     start_time = time.time()
-    token = get_token()
-    response = requests.get(
-        f"{settings.API_URL}/get-all-product/",
-        headers={
-            "accept": "text/csv",
-            "Authorization": f"Bearer {token}"
-        },
-        timeout=10
-    )
-    response.raise_for_status()
-    csv_data = response.text
-    df = pd.read_csv(StringIO(csv_data))
-    print(df)
     try:
         token = get_token()
         response = requests.get(
