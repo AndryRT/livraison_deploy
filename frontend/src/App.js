@@ -9,6 +9,7 @@ import MainLayout from './components/MainLayout';
 import Livraison from './Page/Livraison';
 import CollapsibleTable from './Page/Vehicules';
 import Historique from './Page/Historique';
+import Rapport from './Page/Rapport';
 import Toast from './components/Toast';
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
           <Route path="livraisons" element={<Livraison token={token} />} />
           <Route path="vehicules" element={<CollapsibleTable token={token} addNotification={addNotification} />} />
           <Route path="commandes" element={<Historique token={token} addNotification={addNotification} />} />
+          <Route path="rapports" element={<Rapport token={token} addNotification={addNotification} />} />
         </Route>
         <Route path="*" element={<Navigate to={token ? "/" : "/login"} replace />} />
       </Routes>

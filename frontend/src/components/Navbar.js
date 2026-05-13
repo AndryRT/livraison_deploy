@@ -13,7 +13,8 @@ const Navbar = ({ onLogout }) => {
   const menuItems = [
     { name: 'Livraisons', path: '/livraisons' },
     { name: 'Véhicules', path: '/vehicules' },
-    { name: 'Commandes', path: '/commandes' }
+    { name: 'Commandes', path: '/commandes' },
+    { name: 'Rapports', path: '/rapports' }
   ];
 
   const handleLogoutClick = () => {

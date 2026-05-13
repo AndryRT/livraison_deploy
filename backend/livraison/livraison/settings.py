@@ -159,6 +159,7 @@ DATABASES = {
 # Custom API Configuration
 API_URL = os.getenv("API_URL", "http://10.68.133.2:8000")
 APP_ID = os.getenv("APP_ID","TDI_VISEO")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

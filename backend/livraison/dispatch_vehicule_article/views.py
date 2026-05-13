@@ -137,3 +137,32 @@ async def _apply_metaheuristic_input_async(request):
     resultats = dict(sorted(resultats.items()))
     print(f"***************{len(resultats)}**************")
     return Response({"solution": resultats, "status": "success"})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_reporting(request):
+    from pymongo import MongoClient
+    from django.conf import settings
+
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    client = MongoClient(settings.MONGO_URI)
+    db = client['livraison']
+    collection = db['reporting']
+
+    query = {}
+    if start_date or end_date:
+        query['Date'] = {}
+        if start_date:
+            query['Date']['$gte'] = start_date
+        if end_date:
+            query['Date']['$lte'] = end_date
+
+    documents = list(collection.find(query))
+    for doc in documents:
+        doc['_id'] = str(doc['_id'])
+
+    client.close()
+    return Response(documents)
