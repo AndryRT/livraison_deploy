@@ -79,7 +79,7 @@ def ecrire_json(data):
             collection.delete_many({})
             # Insérer les nouveaux documents
             if data:
-                collection.insert_many(data)
+                collection.insert_many([dict(d) for d in data])
             client.close()
         except Exception as e:
             print(f"Erreur lors de l'écriture des véhicules : {str(e)}")
