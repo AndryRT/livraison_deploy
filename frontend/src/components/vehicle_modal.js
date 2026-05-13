@@ -15,38 +15,6 @@ import {
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
-const columns = [
-  {
-    field: 'immatriculation',
-    headerName: 'Immatriculation',
-    flex: 1,
-    minWidth: 140,
-  },
-  {
-    field: 'vehicule',
-    headerName: 'Véhicule',
-    flex: 1.5,
-    minWidth: 180,
-  },
-  {
-    field: 'type_vehicule',
-    headerName: 'Type',
-    width: 140,
-    renderCell: (params) => {
-      const type = (params.value || '').toString().toLowerCase();
-      const isElectric = type.includes('électrique') || type.includes('electric');
-      return (
-        <Chip
-          label={params.value || 'Inconnu'}
-          size="small"
-          color={isElectric ? 'success' : 'warning'}
-          variant="outlined"
-        />
-      );
-    },
-  },
-];
-
 const formatFullDate = (date) => {
   return date.toLocaleDateString('fr-FR', {
     weekday: 'long',
@@ -144,11 +112,6 @@ export default function VehicleSelectionDialog({ open, onClose, onConfirm }) {
       alert('Échec de la confirmation. Veuillez réessayer.');
     }
   };
-
-  const rowHeight = 52;
-  const columnHeaderHeight = 56;
-  const maxHeight = window.innerHeight * 0.75;
-  const gridHeight = Math.min(rows.length * rowHeight + columnHeaderHeight + 40, maxHeight);
 
   return (
     <Dialog

@@ -20,7 +20,7 @@ const API_BASE_URL = 'http://10.68.163.2/api/match';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const isLargeDevice = width >= 768;
 
   const [identifier, setIdentifier] = useState('');
