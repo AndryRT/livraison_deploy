@@ -85,7 +85,6 @@ export default function VehicleTable({ token, addNotification }) {
   };
 
   const handleOpenAddChauffeurModal = (vehicle) => {
-    setSelectedVehicle(vehicle);
     setNewChauffeur({
       Nom: '',
       Contact: '',
@@ -98,7 +97,6 @@ export default function VehicleTable({ token, addNotification }) {
 
   const handleCloseAddChauffeurModal = () => {
     setAddChauffeurModalOpen(false);
-    setSelectedVehicle(null);
     setNewChauffeur(INITIAL_CHAUFFEUR);
   };
 
