@@ -6,21 +6,16 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            cd /opt/livraison
-            git pull origin main
-            cd backend/livraison && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && deactivate
-            cd /opt/livraison/frontend && npm ci && npm run build
-            sudo systemctl restart livraison-backend || sudo service livraison-backend restart || true
-            sudo systemctl restart livraison-frontend || sudo service livraison-frontend restart || true
+      - name: Deploy with Docker Compose
+        run: |
+          cd ~/livraison_deploy
+          git pull origin main
+          docker compose down
+          docker compose build --no-cache
+          docker compose up -d
