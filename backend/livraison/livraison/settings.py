@@ -125,7 +125,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
 ]
 CORS_ALLOW_CREDENTIALS = True
-#ROOT_URLCONF = 'livraison.urls'
+ROOT_URLCONF = 'livraison.urls'
 
 TEMPLATES = [
     {
