@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo  } from 'react';
-import { GoogleMap, LoadScript, DirectionsRenderer, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import DataTable from 'react-data-table-component';
 import { Package, Truck, MapPin, Info, Maximize2, X, Loader } from 'lucide-react';
 import axios from 'axios';
@@ -175,7 +175,7 @@ const MapSection = ({ isFullscreen, setFullscreenContainer, selectedVehicle }) =
     });
     
     return times;
-  }, [routeInfo]);
+  }, [routeInfo, START_TIME]);
   
   // Fonction pour formater l'heure en HH:MM
   const formatTime = (minutes) => {
@@ -247,7 +247,7 @@ const MapSection = ({ isFullscreen, setFullscreenContainer, selectedVehicle }) =
               strokeWeight: 2
             };
             
-            const arrowPolyline = new window.google.maps.Polyline({
+            new window.google.maps.Polyline({
               path: path,
               geodesic: true,
               strokeOpacity: 0,
@@ -289,6 +289,7 @@ const MapSection = ({ isFullscreen, setFullscreenContainer, selectedVehicle }) =
     if (map && vehicleCoordinates.length >= 2 && isGoogleLoaded) {
       traceRoutes(map);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedVehicle, vehicleCoordinates, isGoogleLoaded]);
 
   return (
@@ -614,7 +615,7 @@ useEffect(() => {
             return null;
           }
           
-          const [routeCoordinates, routeTimes, commandes] = vehicleData;
+          const [routeCoordinates, , commandes] = vehicleData;
           
           if (!Array.isArray(commandes)) {
             console.warn(`Véhicule "${immat}" ignoré (commandes invalides)`);
@@ -774,42 +775,6 @@ useEffect(() => {
       showAlert('Erreur lors de l\'envoi au backend', 'error');
     }
   };
-
-// NOUVEAU : Actualiser le statut depuis le backend
-const handleTerminerLivraison = async () => {
-  if (!currentDelivery) return;
-  
-  const token = getAuthToken();
-  if (!token) return;
-  
-  try {
-    const response = await axios.get(
-      `${API_BASE_URL}/delivery-status/${currentDelivery.delivery_id}`,
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
-    
-    const updatedDelivery = response.data;
-    setCurrentDelivery(updatedDelivery);
-    localStorage.setItem('livraison_current_delivery', JSON.stringify(updatedDelivery));
-    
-    const allDelivered = updatedDelivery.commandes.every(c => c.status === 'delivered');
-    
-    if (allDelivered) {
-      showAlert('🎉 Toutes les destinations ont été livrées !', 'success');
-      setTimeout(() => {
-        handleResetComplet();
-      }, 2000);
-    } else {
-      const livrees = updatedDelivery.commandes.filter(c => c.status === 'delivered').length;
-      showAlert(`Statut actualisé: ${livrees}/${updatedDelivery.commandes.length} livrées`, 'info');
-    }
-  } catch (error) {
-    console.error('Erreur actualisation:', error);
-    showAlert('Erreur lors de l\'actualisation', 'error');
-  }
-};
 
 // NOUVEAU : Annuler la livraison en cours
 const handleAnnulerLivraison = () => {

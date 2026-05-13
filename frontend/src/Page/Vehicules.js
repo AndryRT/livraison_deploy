@@ -72,7 +72,6 @@ export default function VehicleTable({ token, addNotification }) {
   const [editVehicleModalOpen, setEditVehicleModalOpen] = useState(false);
   const [addChauffeurModalOpen, setAddChauffeurModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [filterText, setFilterText] = useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [newVehicle, setNewVehicle] = useState(INITIAL_VEHICLE);
@@ -286,48 +285,6 @@ export default function VehicleTable({ token, addNotification }) {
     cells: { style: { paddingLeft: '15px', paddingRight: '15px', fontSize: '14px' } },
     rows: { style: { borderBottom: '1px solid #e0e0e0', '&:hover': { backgroundColor: '#f8f9fa' } } },
   };
-
-  const VehiclesTableSection = () => (
-    <div className="vehicles-section-card">
-      <h3 className="vehicles-section-title">Gestion des Véhicules</h3>
-      <div className="vehicles-filter-container">
-        <input
-          type="text"
-          className="vehicles-filter-input"
-          placeholder="Rechercher par véhicule, type, immatriculation..."
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-        />
-        {filterText && (
-          <button className="vehicles-clear-filter-btn" onClick={() => { setFilterText(''); setResetPaginationToggle(!resetPaginationToggle); }} title="Effacer la recherche">
-            <X size={16} />
-          </button>
-        )}
-        <button onClick={handleOpenAddVehicleModal}>
-          <Plus size={18} style={{ marginRight: '6px' }} />
-          Ajouter un nouveau vehicule
-        </button>
-      </div>
-      <div className="vehicles-datatable-wrapper">
-        <DataTable
-          columns={columns}
-          data={filteredRows}
-          customStyles={customStyles}
-          pagination
-          paginationComponentOptions={paginationOptions}
-          paginationResetDefaultPage={resetPaginationToggle}
-          paginationPerPage={10}
-          paginationRowsPerPageOptions={[5, 10, 15, 20]}
-          responsive
-          highlightOnHover
-          striped
-          expandableRows
-          expandableRowsComponent={(props) => <ExpandedComponent {...props} onAddChauffeur={handleOpenAddChauffeurModal} />}
-          noDataComponent="Aucun véhicule trouvé"
-        />
-      </div>
-    </div>
-  );
 
   if (loading) {
     return (
