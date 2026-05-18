@@ -46,7 +46,7 @@ def fetch_fleet_info(trackable_id):
         response = requests.get(url, headers=HEADERS)
         response.raise_for_status()
         data = response.json().get("data", [])
-        print(data)
+        #print(data)
         if data:
             attrs = data[0].get("attributes", {})
             return {"category": attrs.get("name", ""), "label": attrs.get("label", "")}
@@ -193,6 +193,7 @@ def get_odometer():
                 continue
         records = df_filtered.to_dict(orient='records')
         mongo_upsert_reporting(records)
+        print(df_filtered)
         df_filtered.to_csv('odometer_livraison.csv', index=False)
         print("Synchronisation terminée.")
 
