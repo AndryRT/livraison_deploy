@@ -1,7 +1,10 @@
 from pymongo import MongoClient
+import os
 import pandas as pd
 import numpy as np
 import logging
+
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -10,7 +13,7 @@ def find_incompatibilities_for_df():
     Charge et transforme la matrice de compatibilité depuis MongoDB, en gérant les structures de données plates et imbriquées.
     """
     try:
-        client = MongoClient('mongodb://mongodb:27017/')
+        client = MongoClient(MONGO_URI)
         db = client['livraison']
         collection = db['compatiblity']
         data = list(collection.find({}, {'_id': 0}))

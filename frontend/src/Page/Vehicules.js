@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import { Trash, Pencil, ShieldCheck, X, Plus } from 'lucide-react';
+import { Trash, Pencil, ShieldCheck, X, Plus, Truck, Search } from 'lucide-react';
 import '../styles/Vehicules.css';
+import API_BASE_URL from '../config';
 
-const API_BASE = '/api/vehicules';
+const API_BASE = `${API_BASE_URL}/vehicules`;
 
 const INITIAL_VEHICLE = {
   Vehicule: '', Type: '', Immatriculation: '', Tonnage: '', 
@@ -253,7 +254,6 @@ export default function VehicleTable({ token, addNotification }) {
 
   const columns = [
     { name: 'Vehicule', selector: row => row.Vehicule, sortable: true, wrap: true },
-    { name: 'Type', selector: row => row.Type, sortable: true },
     { name: 'Immatriculation', selector: row => row.Immatriculation, sortable: true },
     { name: 'Tonnage', selector: row => row.Tonnage, sortable: true },
     { name: 'Dimension', selector: row => row.Dimension, sortable: true, wrap: true },
@@ -297,31 +297,48 @@ export default function VehicleTable({ token, addNotification }) {
   <>
     <div className="vehicles-container">
       <div className="vehicles-section-card">
-        <h3 className="vehicles-section-title">Gestion des Véhicules</h3>
-        <div className="vehicles-filter-container">
-          <input
-            type="text"
-            className="vehicles-filter-input"
-            placeholder="Rechercher par véhicule, type, immatriculation..."
-            value={filterText}
-            onChange={(e) => setFilterText(e.target.value)}
-          />
-          {filterText && (
-            <button 
-              className="vehicles-clear-filter-btn" 
-              onClick={() => { 
-                setFilterText(''); 
-                setResetPaginationToggle(!resetPaginationToggle); 
-              }} 
-              title="Effacer la recherche"
-            >
-              <X size={16} />
-            </button>
-          )}
-          <button onClick={handleOpenAddVehicleModal}>
-            <Plus size={18} style={{ marginRight: '6px' }} />
-            Ajouter un nouveau vehicule
-          </button>
+        <h3 className="livraison-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '10px' }}>
+          <Truck size={20} style={{ marginRight: '8px', color: '#3b82f6' }} />
+          Gestion des Véhicules
+        </h3>
+        <div className="premium-filter-card">
+          <div className="premium-filter-grid" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-end', gap: '16px' }}>
+            
+            <div className="premium-filter-group">
+              <label className="premium-filter-label">
+                <Search size={13} style={{ color: '#64748b' }} />
+                Recherche
+              </label>
+              <div className="premium-search-wrapper">
+                <input
+                  type="text"
+                  className="premium-filter-input premium-search-input"
+                  placeholder="Rechercher par véhicule, type, immatriculation..."
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                />
+                {filterText && (
+                  <button className="premium-search-clear" onClick={() => { setFilterText(''); setResetPaginationToggle(!resetPaginationToggle); }} title="Effacer">
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="premium-filter-group">
+              <button 
+                onClick={handleOpenAddVehicleModal} 
+                className="premium-export-btn" 
+                style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', width: 'auto', minWidth: '220px', boxShadow: '0 2px 4px rgba(59, 130, 246, 0.1)' }}
+                onMouseEnter={(e) => e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.25)'}
+                onMouseLeave={(e) => e.target.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.1)'}
+              >
+                <Plus size={18} style={{ marginRight: '6px' }} />
+                Ajouter un nouveau véhicule
+              </button>
+            </div>
+
+          </div>
         </div>
         <div className="vehicles-datatable-wrapper">
           <DataTable

@@ -144,9 +144,11 @@ async def _apply_metaheuristic_input_async(request):
 def get_reporting(request):
     from pymongo import MongoClient
     from django.conf import settings
+    from datetime import datetime, timedelta
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
+    category = request.GET.get('category')
 
     client = MongoClient(settings.MONGO_URI)
     db = client['livraison']
@@ -154,11 +156,22 @@ def get_reporting(request):
 
     query = {}
     if start_date or end_date:
-        query['Date'] = {}
+        query['Database_date'] = {}
         if start_date:
-            query['Date']['$gte'] = start_date
+            try:
+                start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+                query['Database_date']['$gte'] = start_dt
+            except ValueError:
+                pass
         if end_date:
-            query['Date']['$lte'] = end_date
+            try:
+                end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1)
+                query['Database_date']['$lt'] = end_dt
+            except ValueError:
+                pass
+
+    if category:
+        query['category'] = category
 
     documents = list(collection.find(query))
     for doc in documents:

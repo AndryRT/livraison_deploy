@@ -5,6 +5,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from rest_framework import status
 from pymongo import MongoClient
+import os
+
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 import pandas as pd
 from datetime import datetime
 from rich import print
@@ -28,7 +31,7 @@ def get_data_react(request):
     date = request.data.get('date', datetime.now().strftime('%Y-%m-%d'))
     if not isinstance(vehicules_disponibles, list):
         return Response({"error": "vehicules_disponibles doit être une liste"}, status=400)
-    client = MongoClient('mongodb://mongodb:27017/')
+    client = MongoClient(MONGO_URI)
     db = client['livraison']
     collection = db.vehicules_disponibles_frontend
     collection.delete_many({})
@@ -60,8 +63,81 @@ def vehicules_view(request):
         Response: Une réponse JSON avec la liste des véhicules ou le statut de l'ajout.
     """
     if request.method == 'GET':
-        data = lire_json()
-        return Response(data)
+        client = MongoClient(MONGO_URI)
+        db = client['livraison']
+        
+        # 1. Fetch unique GPS records with category "LIVRAISON"
+        pipeline = [
+            {"$match": {"category": "LIVRAISON", "Immatriculation": {"$ne": None}}},
+            {"$sort": {"Database_date": -1}},
+            {"$group": {
+                "_id": "$Immatriculation",
+                "Vehicules": {"$first": "$Vehicules"},
+                "Marque": {"$first": "$Marque"},
+                "type_vehicule": {"$first": "$type"}
+            }}
+        ]
+        liv_gps_vehicles = list(db['reporting'].aggregate(pipeline))
+        liv_plates_set = {str(gps_veh['_id']).strip().upper() for gps_veh in liv_gps_vehicles}
+        
+        # 2. Get existing registered vehicles
+        veh_collection = db['vehicules']
+        existing_vehicles = list(veh_collection.find())
+        existing_plates = {str(v.get('Immatriculation', '')).strip().upper() for v in existing_vehicles if v.get('Immatriculation')}
+        
+        # Get highest current Mat to safely increment
+        max_mat = 0
+        for v in existing_vehicles:
+            try:
+                mat_val = int(v.get('Mat', 0))
+                if mat_val > max_mat:
+                    max_mat = mat_val
+            except (ValueError, TypeError):
+                pass
+                
+        # 3. Seed any GPS delivery vehicles that are not in the vehicle list yet
+        seeded_any = False
+        for gps_veh in liv_gps_vehicles:
+            plate = str(gps_veh['_id']).strip()
+            if plate.upper() not in existing_plates:
+                max_mat += 1
+                new_veh = {
+                    "Vehicule": gps_veh.get("Vehicules") or gps_veh.get("Marque") or "Véhicule Livraison",
+                    "Type": gps_veh.get("type_vehicule") or "gasoil",
+                    "Immatriculation": plate,
+                    "Tonnage": "0",
+                    "Dimension": "0 x 0 x 0",
+                    "active": True,
+                    "Mat": max_mat,
+                    "Nom": "",
+                    "Contact": "",
+                    "Poste": "",
+                    "history": []
+                }
+                veh_collection.insert_one(new_veh)
+                seeded_any = True
+                
+        # Reload registered vehicles if we added any new ones
+        if seeded_any:
+            existing_vehicles = list(veh_collection.find())
+            
+        client.close()
+        
+        # 4. Filter the returned list to only show LIVRAISON vehicles
+        filtered_data = []
+        for v in existing_vehicles:
+            v.pop('_id', None) # Remove ObjectId for JSON compatibility
+            plate = str(v.get('Immatriculation', '')).strip().upper()
+            if plate in liv_plates_set:
+                filtered_data.append(v)
+                
+        if not filtered_data:
+            # Fallback to returning all vehicles without filter if no matches exist
+            for v in existing_vehicles:
+                v.pop('_id', None)
+            return Response(existing_vehicles)
+            
+        return Response(filtered_data)
 
     elif request.method == 'POST':
         serializer = VehiculeSerializer(data=request.data)
@@ -152,23 +228,28 @@ def modifier_vehicule(request, pk):
 @permission_classes([IsAuthenticated])
 def get_vehicle_active(request):
     try:
-        client = MongoClient('mongodb://mongodb:27017/') 
+        client = MongoClient(MONGO_URI) 
         db = client['livraison']
+        
+        liv_plates = db['reporting'].distinct("Immatriculation", {"category": "LIVRAISON"})
+        liv_plates_set = {str(p).strip().upper() for p in liv_plates if p}
+        
         collection = db['vehicules']
- 
         cursor = collection.find({"active": True})
 
         vehicles = []
         for doc in cursor:
-            vehicles.append({
-                "id": str(doc["_id"]),
-                "immatriculation": doc.get("Immatriculation") or doc.get("Vehicule") or "N/A",
-                "type_vehicule": doc.get("Type", ""),
-                "vehicule": doc.get("Vehicule", ""),
-                "Dimension": doc.get("Dimension", ""),
-                "Tonnage": doc.get("Tonnage", ""),
-                "volume": doc.get("volume", "")
-            })
+            plate = str(doc.get("Immatriculation", "")).strip().upper()
+            if not liv_plates_set or plate in liv_plates_set:
+                vehicles.append({
+                    "id": str(doc["_id"]),
+                    "immatriculation": doc.get("Immatriculation") or doc.get("Vehicule") or "N/A",
+                    "type_vehicule": doc.get("Type", ""),
+                    "vehicule": doc.get("Vehicule", ""),
+                    "Dimension": doc.get("Dimension", ""),
+                    "Tonnage": doc.get("Tonnage", ""),
+                    "volume": doc.get("volume", "")
+                })
 
         client.close()
         return Response({"vehicles": vehicles}, status=status.HTTP_200_OK)

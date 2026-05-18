@@ -11,11 +11,13 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 from rich import print as rprint
 import numpy as np
 
+import os
+
 # =========================
 # 🔧 CONFIGURATION
 # =========================
 API_KEY = 'AIzaSyBPp50ByhH43bsf5ayKyQjUg7jbYagwSKY'
-MONGO_URI = 'mongodb://mongodb:27017'
+MONGO_URI = os.environ.get("MONGO_URI", 'mongodb://localhost:27017')
 DB_NAME = 'livraison'
 COLLECTION_NAME = 'ville'
 gmaps = googlemaps.Client(key=API_KEY)

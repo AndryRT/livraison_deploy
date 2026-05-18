@@ -3,6 +3,9 @@ import json
 import re
 import numpy as np
 from pymongo import MongoClient
+import os
+
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 from fuzzywuzzy import fuzz
 from processing.services import fetch_odoo_data
 from numba import njit, prange
@@ -13,7 +16,7 @@ from typing import List, Dict, Any
 
 def get_vehicle_data_json():
     try:
-        client = MongoClient('mongodb://mongodb:27017/')
+        client = MongoClient(MONGO_URI)
         db = client['livraison']
         collection = db.vehicules_disponibles_frontend
         documents = collection.find({}, {"_id": 0, "vehicules_disponibles": 1})
@@ -41,7 +44,7 @@ def _parse_metric(metric):
 def get_full_article_data():
     client = None
     try:
-        client = MongoClient('mongodb://mongodb:27017/')
+        client = MongoClient(MONGO_URI)
         db = client['livraison']
         collection = db['article']
 

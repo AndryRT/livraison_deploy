@@ -73,7 +73,7 @@ const OrdersSection = ({ isFullscreen, setFullscreenContainer, orders, filterTex
     <button className="livraison-fullscreen-btn" onClick={() => setFullscreenContainer(isFullscreen ? null : 'orders')} title={isFullscreen ? "Quitter le plein écran" : "Plein écran"}>
       {isFullscreen ? <X size={20} /> : <Maximize2 size={20} />}
     </button>
-    <h3 className="livraison-section-title"><Package size={20} style={{ marginRight: '8px', color: '#209e26ff' }} />Gestion des Commandes</h3>
+    <h3 className="livraison-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '10px' }}><Package size={20} style={{ marginRight: '8px', color: '#3b82f6' }} />Gestion des Commandes</h3>
     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px', marginBottom: '15px' }}>
       <div className="livraison-filter-container">
         {orders.length > 0 && (
@@ -87,7 +87,7 @@ const OrdersSection = ({ isFullscreen, setFullscreenContainer, orders, filterTex
     </div>
     {orders.length > 0 && (
       <div className="livraison-datatable-wrapper">
-        <DataTable columns={ORDERS_COLUMNS} data={filteredOrders} customStyles={TABLE_CUSTOM_STYLES} pagination paginationComponentOptions={PAGINATION_OPTIONS} paginationResetDefaultPage={resetPaginationToggle} paginationPerPage={10} paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]} responsive highlightOnHover striped noDataComponent="Aucune commande trouvée" persistTableHead fixedHeader fixedHeaderScrollHeight={isFullscreen ? 'calc(100vh - 280px)' : '400px'} />
+        <DataTable columns={ORDERS_COLUMNS} data={filteredOrders} customStyles={TABLE_CUSTOM_STYLES} pagination paginationComponentOptions={PAGINATION_OPTIONS} paginationResetDefaultPage={resetPaginationToggle} paginationPerPage={10} paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]} responsive highlightOnHover striped noDataComponent="Aucune commande trouvée" persistTableHead />
       </div>
     )}
   </div>
@@ -98,7 +98,7 @@ const VehiclesSection = ({ isFullscreen, setFullscreenContainer, vehicles, selec
     <button className="livraison-fullscreen-btn" onClick={() => setFullscreenContainer(isFullscreen ? null : 'vehicles')} title={isFullscreen ? "Quitter le plein écran" : "Plein écran"}>
       {isFullscreen ? <X size={20} /> : <Maximize2 size={20} />}
     </button>
-    <h3 className="livraison-section-title"><Truck size={20} style={{ marginRight: '8px', color:'#8b7bb9ff' }} />Véhicules de Livraison</h3>
+    <h3 className="livraison-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '10px' }}><Truck size={20} style={{ marginRight: '8px', color: '#3b82f6' }} />Véhicules de Livraison</h3>
     <div className="livraison-vehicles-list">
       {vehicles.map((vehicle) => (
         <div key={vehicle.immatriculation} className={`livraison-vehicle-item ${selectedVehicle?.immatriculation === vehicle.immatriculation ? 'livraison-selected' : ''}`} onClick={() => setSelectedVehicle(vehicle)}>
@@ -443,7 +443,7 @@ const DetailsSection = ({ isFullscreen, setFullscreenContainer, selectedVehicle 
       <button className="livraison-fullscreen-btn" onClick={() => setFullscreenContainer(isFullscreen ? null : 'details')} title={isFullscreen ? "Quitter le plein écran" : "Plein écran"}>
         {isFullscreen ? <X size={20} /> : <Maximize2 size={20} />}
       </button>
-      <h3 className="livraison-section-title"><Info size={20} style={{ marginRight: '8px', color: '#3283cfff' }} />Informations Véhicule pour {selectedVehicle?.immatriculation || 'le véhicule sélectionné'}</h3>
+      <h3 className="livraison-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '10px' }}><Info size={20} style={{ marginRight: '8px', color: '#3b82f6' }} />Informations Véhicule pour {selectedVehicle?.immatriculation || 'le véhicule sélectionné'}</h3>
       <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px', marginBottom: '15px' }}>
         <div className="livraison-filter-container">
           {vehicleAllInfoData.length > 0 && (
@@ -456,7 +456,7 @@ const DetailsSection = ({ isFullscreen, setFullscreenContainer, selectedVehicle 
       </div>
       {vehicleAllInfoData.length > 0 && (
         <div className="livraison-datatable-wrapper livraison-vehicle-details-table">
-          <DataTable columns={VEHICLE_INFO_COLUMNS} data={filteredVehicleData} customStyles={TABLE_CUSTOM_STYLES} pagination paginationComponentOptions={PAGINATION_OPTIONS} paginationResetDefaultPage={vehicleResetPagination} paginationPerPage={5} paginationRowsPerPageOptions={[5, 10, 15, 20]} responsive highlightOnHover striped noDataComponent="Aucune information disponible" persistTableHead fixedHeader fixedHeaderScrollHeight={isFullscreen ? 'calc(100vh - 280px)' : '300px'} />
+          <DataTable columns={VEHICLE_INFO_COLUMNS} data={filteredVehicleData} customStyles={TABLE_CUSTOM_STYLES} pagination paginationComponentOptions={PAGINATION_OPTIONS} paginationResetDefaultPage={vehicleResetPagination} paginationPerPage={5} paginationRowsPerPageOptions={[5, 10, 15, 20]} responsive highlightOnHover striped noDataComponent="Aucune information disponible" persistTableHead />
         </div>
       )}
     </div>

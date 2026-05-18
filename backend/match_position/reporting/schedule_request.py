@@ -80,7 +80,8 @@ def get_mark(mark_list, name):
     return None
 
 def mongo_upsert_reporting(records):
-    client = MongoClient("mongodb://mongodb:27017/")
+    import os
+    client = MongoClient(os.environ.get("MONGO_URI", "mongodb://localhost:27017/"))
     db = client[db_name]
     collection = db[collection_name]
     operations = []
@@ -104,9 +105,9 @@ def get_odometer():
         df = get_trackables()
         if not df.empty:
             enrich_dataframe(df)
-        df_filtered = df[df['category'] == 'LIVRAISON'].reset_index(drop=True)
+        df_filtered = df.reset_index(drop=True)
         if df_filtered.empty:
-            print("Aucun véhicule de type 'LIVRAISON' trouvé.")
+            print("Aucun véhicule trouvé.")
             return
 
         TRIP_BASE = "https://api.tag-ip.com/track/v3/trackables"
@@ -124,7 +125,7 @@ def get_odometer():
                 id_ = str(row['id'])
                 trip_url = f"{TRIP_BASE}/uuid/{id_}/trips"
                 odometer_request = requests.get(trip_url, headers=HEADERS).json()
-                print(odoometer_request)
+                #print(odometer_request)
                 odometer_value = odometer_request.get("data", [])
                 attributes = row.get('attributes', {})
                 df_filtered.at[index, 'Marque'] = get_mark(marques, attributes.get('name', ''))
@@ -190,6 +191,7 @@ def get_odometer():
                 df_filtered.at[index,"distance"]=int(sum(differences))/1000
                 sleep(1)
             except Exception as e:
+                print(f"Erreur véhicule index {index}: {type(e).__name__} - {e}")
                 continue
         records = df_filtered.to_dict(orient='records')
         mongo_upsert_reporting(records)

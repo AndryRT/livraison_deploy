@@ -15,8 +15,8 @@ DEPOT_NAME = "Gallaxy village viseo"
 API_KEY = "AIzaSyBPp50ByhH43bsf5ayKyQjUg7jbYagwSKY"  # Change si besoin
 gmaps = googlemaps.Client(key=API_KEY)
 
-# ==================== MONGODB CACHE (SANS CREATE_INDEX) ====================
-client = MongoClient("mongodb://mongodb:27017/")
+import os
+client = MongoClient(os.environ.get("MONGO_URI", "mongodb://localhost:27017/"))
 db = client["vrp_cache"]
 collection = db["trajets"]
 

@@ -35,7 +35,7 @@ oauth2_scheme = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-MONGO_URI = os.getenv('MONGO_URI', 'mongodb://mongodb:27017')
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017')
 
 def get_db_collection(name: str):
     client = MongoClient(MONGO_URI)

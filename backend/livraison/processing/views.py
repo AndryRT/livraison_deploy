@@ -18,6 +18,9 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from pymongo import MongoClient
+import os
+
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 from django.db import transaction, IntegrityError
 import logging
 import pandas as pd
@@ -122,7 +125,7 @@ def insert_to_mongodb(records, db_name='livraison', collection_name='articles'):
     """
     start_time = time.time()
     try:
-        client = MongoClient('mongodb://mongodb:27017/')
+        client = MongoClient(MONGO_URI)
         db = client[db_name]
         collection = db[collection_name]
         if records:

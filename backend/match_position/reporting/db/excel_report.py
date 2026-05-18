@@ -15,7 +15,8 @@ async def secondes_to_timedelta(total_seconds):
 @router.get("/excel")
 async def generate_excel_report(
     date_debut: str = Query(..., description="Date de début (format: YYYY-MM-DD)"),
-    date_fin: str = Query(..., description="Date de fin (format: YYYY-MM-DD)")
+    date_fin: str = Query(..., description="Date de fin (format: YYYY-MM-DD)"),
+    category: str = Query(None, description="Catégorie (optionnel)")
 ):
     try:
         try:
@@ -28,6 +29,8 @@ async def generate_excel_report(
             )
         collection = get_reporting_collection()
         query = {"Database_date": {"$gte": start_dt, "$lt": end_dt}}
+        if category:
+            query["category"] = category
         cursor = collection.find(query, {"_id": 0})
         docs = await cursor.to_list(length=10000)
         docs.sort(key=lambda x: (str(x.get("Vehicules", "")).strip().upper()))
