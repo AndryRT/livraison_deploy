@@ -80,7 +80,7 @@ def get_mark(mark_list, name):
     return None
 
 def mongo_upsert_reporting(records):
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb://mongodb:27017/")
     db = client[db_name]
     collection = db[collection_name]
     operations = []
