@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import DataTable from 'react-data-table-component';
-import { Calendar, Download, X, Search, Filter, FileSpreadsheet } from 'lucide-react';
+import { Calendar, Download, X, Search, Filter, FileSpreadsheet, Palette } from 'lucide-react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -14,42 +14,102 @@ const PAGINATION_OPTIONS = {
   selectAllRowsItemText: 'Tous',
 };
 
+const formatDuration = (seconds) => {
+  if (seconds === null || seconds === undefined || seconds === '—' || isNaN(seconds)) return '—';
+  const sec = parseInt(seconds, 10);
+  if (sec === 0) return '0s';
+  const hrs = Math.floor(sec / 3600);
+  const mins = Math.floor((sec % 3600) / 60);
+  const secs = sec % 60;
+  
+  let result = [];
+  if (hrs > 0) result.push(`${hrs}h`);
+  if (mins > 0) result.push(`${mins}m`);
+  if (secs > 0 || result.length === 0) result.push(`${secs}s`);
+  return result.join(' ');
+};
+
 const TABLE_CUSTOM_STYLES = {
   headRow: {
     style: {
-      backgroundColor: '#f8f9fa',
-      color: 'black',
-      fontSize: '13px',
-      fontWeight: '600',
-      borderBottom: '2px solid #28a745'
+      backgroundColor: '#f1f5f9', // Slate 100
+      color: '#1e293b',          // Slate 800
+      fontSize: '11px',
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      letterSpacing: '0.08em',
+      borderBottom: '2px solid #cbd5e1', // Slate 300
+      minHeight: '48px',
     }
   },
   headCells: {
-    style: { paddingLeft: '15px', paddingRight: '15px' }
+    style: { paddingLeft: '16px', paddingRight: '16px' }
   },
   cells: {
-    style: { paddingLeft: '15px', paddingRight: '15px', fontSize: '14px' }
+    style: { paddingLeft: '16px', paddingRight: '16px', fontSize: '13px' }
   },
   rows: {
     style: {
-      borderBottom: '1px solid #e0e0e0',
-      '&:hover': { backgroundColor: '#f8f9fa' }
+      minHeight: '48px',
+      color: '#334155',
+      borderBottom: '1px solid #e2e8f0', // Slate 200
+      '&:hover': { 
+        backgroundColor: '#f8fafc', // Slate 50
+        transition: 'background-color 0.15s ease'
+      }
+    }
+  },
+  pagination: {
+    style: {
+      borderTop: '1px solid #e2e8f0',
+      color: '#475569',
+      fontSize: '13px'
     }
   }
 };
 
+const isRowActive = (row) => {
+  const service = parseInt(row.Service, 10);
+  const dist = parseFloat(row.distance);
+  const hasService = !isNaN(service) && service > 0;
+  const hasDistance = !isNaN(dist) && dist > 0;
+  return hasService || hasDistance;
+};
+
+const conditionalRowStyles = [
+  {
+    when: row => !isRowActive(row),
+    style: {
+      backgroundColor: '#fef9c3', // Soft yellow
+      color: '#713f12',          // Dark amber text
+      '&:hover': {
+        backgroundColor: '#fef08a',
+      },
+    },
+  },
+  {
+    when: row => isRowActive(row),
+    style: {
+      backgroundColor: '#d1fae5', // Soft green (Emerald 100)
+      color: '#065f46',          // Dark green text
+      '&:hover': {
+        backgroundColor: '#a7f3d0', // Emerald 200 on hover
+      },
+    },
+  },
+];
+
 const columns = [
-  { name: 'Date', selector: row => row.Date || '—', width: '110px', sortable: true },
-  { name: 'Véhicule', selector: row => row.Vehicules || '—', minWidth: '150px', wrap: true, sortable: true },
-  { name: 'Immatriculation', selector: row => row.Immatriculation || '—', width: '140px', sortable: true },
-  { name: 'Marque', selector: row => row.Marque || '—', width: '110px', sortable: true },
-  { name: 'Catégorie', selector: row => row.category || '—', width: '120px', sortable: true },
-  { name: 'Label', selector: row => row.label || '—', minWidth: '120px', wrap: true },
-  { name: 'Odometre (km)', selector: row => row.odometer ?? '—', width: '130px', sortable: true, right: true },
-  { name: 'Distance (km)', selector: row => row.distance ?? '—', width: '120px', sortable: true, right: true },
-  { name: 'Service (s)', selector: row => row.Service ?? '—', width: '110px', sortable: true, right: true },
-  { name: 'Arrêt (s)', selector: row => row.Stop_service ?? '—', width: '110px', sortable: true, right: true },
-  { name: 'Carburant (L)', selector: row => row.fuel ?? '—', width: '120px', sortable: true, right: true },
+  { name: 'Date', selector: row => row.Date || '—', sortable: true, minWidth: '110px' },
+  { name: 'Véhicule', selector: row => row.Vehicules || '—', sortable: true, minWidth: '320px' },
+  { name: 'Immatriculation', selector: row => row.Immatriculation || '—', sortable: true, minWidth: '140px' },
+  { name: 'Marque', selector: row => row.Marque || '—', sortable: true, minWidth: '110px' },
+  { name: 'Catégorie', selector: row => row.category || '—', sortable: true, minWidth: '130px' },
+  { name: 'Odomètre', selector: row => row.odometer !== undefined && row.odometer !== null ? `${row.odometer.toLocaleString()} km` : '—', sortable: true, right: true, minWidth: '130px' },
+  { name: 'Distance', selector: row => row.distance !== undefined && row.distance !== null ? `${row.distance.toLocaleString()} km` : '—', sortable: true, right: true, minWidth: '110px' },
+  { name: 'Temps Service', selector: row => formatDuration(row.Service), sortable: true, right: true, minWidth: '130px' },
+  { name: 'Temps Arrêt', selector: row => formatDuration(row.Stop_service), sortable: true, right: true, minWidth: '120px' },
+  { name: 'Carburant', selector: row => row.fuel !== undefined && row.fuel !== null ? `${row.fuel.toLocaleString()} L` : '—', sortable: true, right: true, minWidth: '110px' },
 ];
 
 const exportToExcel = (data, filename = 'rapport_vehicules.xlsx') => {
@@ -64,10 +124,10 @@ const exportToExcel = (data, filename = 'rapport_vehicules.xlsx') => {
     Marque: row.Marque || '',
     Catégorie: row.category || '',
     Label: row.label || '',
-    'Odometre (km)': row.odometer ?? '',
+    'Odomètre (km)': row.odometer ?? '',
     'Distance (km)': row.distance ?? '',
-    'Service (s)': row.Service ?? '',
-    'Arrêt (s)': row.Stop_service ?? '',
+    'Temps Service (s)': row.Service ?? '',
+    'Temps Arrêt (s)': row.Stop_service ?? '',
     'Carburant (L)': row.fuel ?? '',
   }));
   const ws = XLSX.utils.json_to_sheet(worksheetData);
@@ -93,6 +153,8 @@ export default function Rapport({ token, addNotification }) {
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [tempStartDate, setTempStartDate] = useState('');
   const [tempEndDate, setTempEndDate] = useState('');
+  const [activityFilter, setActivityFilter] = useState('');
+  const [activityDropdownOpen, setActivityDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (dateDropdownOpen) {
@@ -194,6 +256,13 @@ export default function Rapport({ token, addNotification }) {
         selectedPlates.includes(row.Immatriculation.trim())
       );
     }
+    if (activityFilter) {
+      if (activityFilter === 'active') {
+        result = result.filter(isRowActive);
+      } else if (activityFilter === 'inactive') {
+        result = result.filter(row => !isRowActive(row));
+      }
+    }
     if (filterText) {
       const lower = filterText.toLowerCase();
       result = result.filter(row =>
@@ -205,7 +274,7 @@ export default function Rapport({ token, addNotification }) {
       );
     }
     return result;
-  }, [data, selectedCategory, selectedPlates, filterText]);
+  }, [data, selectedCategory, selectedPlates, filterText, activityFilter]);
 
   const handleExport = () => {
     if (filteredData.length === 0) return;
@@ -238,7 +307,7 @@ export default function Rapport({ token, addNotification }) {
           }
           @media (min-width: 1200px) {
             .premium-filter-grid {
-              grid-template-columns: 1.2fr 1.5fr 1.2fr 1.5fr 1fr;
+              grid-template-columns: 1.1fr 1.3fr 1.1fr 1.3fr 1.1fr 0.8fr;
             }
           }
           .premium-filter-group {
@@ -864,6 +933,83 @@ export default function Rapport({ token, addNotification }) {
               )}
             </div>
 
+            <div className="premium-filter-group" style={{ position: 'relative' }}>
+              <label className="premium-filter-label">
+                <Palette size={13} style={{ color: '#64748b' }} />
+                Statut (Couleur)
+              </label>
+              <div 
+                className="premium-m2m-container"
+                style={{ cursor: 'pointer', justifyContent: 'space-between', height: '42px' }}
+                onClick={() => setActivityDropdownOpen(!activityDropdownOpen)}
+              >
+                <span style={{ fontSize: '13px', color: activityFilter ? '#0f172a' : '#94a3b8', fontWeight: activityFilter ? '600' : 'normal', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {activityFilter === 'active' ? (
+                    <>
+                      <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
+                      Actifs (Vert)
+                    </>
+                  ) : activityFilter === 'inactive' ? (
+                    <>
+                      <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#eab308' }} />
+                      Immobiles (Jaune)
+                    </>
+                  ) : (
+                    "Tous les statuts"
+                  )}
+                </span>
+                <span style={{ fontSize: '10px', color: '#64748b', transform: activityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                  ▼
+                </span>
+              </div>
+
+              {activityDropdownOpen && (
+                <>
+                  <div 
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 998 }} 
+                    onClick={() => setActivityDropdownOpen(false)} 
+                  />
+                  <div className="premium-dropdown-list">
+                    <div 
+                      onClick={() => {
+                        setActivityFilter('');
+                        setActivityDropdownOpen(false);
+                        setResetPaginationToggle(!resetPaginationToggle);
+                      }}
+                      className="premium-dropdown-item"
+                      style={{ fontWeight: !activityFilter ? 'bold' : 'normal', backgroundColor: !activityFilter ? '#f1f5f9' : 'transparent', color: !activityFilter ? '#1d4ed8' : '#334155' }}
+                    >
+                      Tous les statuts
+                    </div>
+                    <div 
+                      onClick={() => {
+                        setActivityFilter('active');
+                        setActivityDropdownOpen(false);
+                        setResetPaginationToggle(!resetPaginationToggle);
+                      }}
+                      className="premium-dropdown-item"
+                      style={{ fontWeight: activityFilter === 'active' ? 'bold' : 'normal', backgroundColor: activityFilter === 'active' ? '#eff6ff' : 'transparent', color: activityFilter === 'active' ? '#1d4ed8' : '#334155', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                      <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
+                      Actifs (Vert)
+                    </div>
+                    <div 
+                      onClick={() => {
+                        setActivityFilter('inactive');
+                        setActivityDropdownOpen(false);
+                        setResetPaginationToggle(!resetPaginationToggle);
+                      }}
+                      className="premium-dropdown-item"
+                      style={{ fontWeight: activityFilter === 'inactive' ? 'bold' : 'normal', backgroundColor: activityFilter === 'inactive' ? '#eff6ff' : 'transparent', color: activityFilter === 'inactive' ? '#1d4ed8' : '#334155', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                      <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#eab308' }} />
+                      Immobiles (Jaune)
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
             <div className="premium-filter-group">
               <button 
                 className="premium-export-btn" 
@@ -888,7 +1034,7 @@ export default function Rapport({ token, addNotification }) {
 
         <div className="livraison-datatable-wrapper">
           <DataTable
-            key={selectedCategory + "_" + selectedPlates.join(",") + "_" + filterText}
+            key={selectedCategory + "_" + selectedPlates.join(",") + "_" + filterText + "_" + activityFilter}
             columns={columns}
             data={filteredData}
             progressPending={loading}
@@ -899,6 +1045,7 @@ export default function Rapport({ token, addNotification }) {
             paginationPerPage={25}
             paginationRowsPerPageOptions={[10, 25, 50, 100]}
             customStyles={TABLE_CUSTOM_STYLES}
+            conditionalRowStyles={conditionalRowStyles}
             responsive
             highlightOnHover
             striped
