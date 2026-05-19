@@ -43,6 +43,7 @@ class VehiculeSerializerTest(TestCase):
         self.assertEqual(serializer.validated_data.get("Mat"), 0)
 
 
+@patch("driver_vehicle.views.MongoClient")
 @patch("driver_vehicle.views.lire_json")
 @patch("driver_vehicle.views.ecrire_json")
 class VehiculeViewsTest(TestCase):
@@ -50,17 +51,30 @@ class VehiculeViewsTest(TestCase):
         self.factory = APIRequestFactory()
         self.user = User.objects.create_user(username="testuser", password="testpass123")
 
-    def test_vehicules_view_get(self, mock_ecrire, mock_lire):
-        mock_lire.return_value = [
+    def test_vehicules_view_get(self, mock_ecrire, mock_lire, mock_mongo):
+        reporting_mock = MagicMock()
+        reporting_mock.aggregate.return_value = []
+        vehicules_mock = MagicMock()
+        vehicules_mock.find.return_value = [
             {"Immatriculation": "1234ABC", "Vehicule": "Camion A", "Mat": 1}
         ]
+
+        def db_getitem(name):
+            if name == 'reporting':
+                return reporting_mock
+            return vehicules_mock
+
+        mock_db = MagicMock()
+        mock_db.__getitem__.side_effect = db_getitem
+        mock_mongo.return_value.__getitem__.return_value = mock_db
+
         request = self.factory.get("/api/vehicules/")
         force_authenticate(request, user=self.user)
         response = vehicules_view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
-    def test_vehicules_view_post_duplicate_immat(self, mock_ecrire, mock_lire):
+    def test_vehicules_view_post_duplicate_immat(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = [
             {"Immatriculation": "1234ABC", "Vehicule": "Camion A", "Mat": 1}
         ]
@@ -70,21 +84,21 @@ class VehiculeViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("existe déjà", str(response.data.get("error", "")))
 
-    def test_vehicules_view_post_ok(self, mock_ecrire, mock_lire):
+    def test_vehicules_view_post_ok(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = []
         request = self.factory.post("/api/vehicules/", {"Immatriculation": "NEW001"}, format="json")
         force_authenticate(request, user=self.user)
         response = vehicules_view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_modifier_vehicule_not_found(self, mock_ecrire, mock_lire):
+    def test_modifier_vehicule_not_found(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = []
         request = self.factory.get("/api/vehicules/999/")
         force_authenticate(request, user=self.user)
         response = modifier_vehicule(request, pk=999)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_modifier_vehicule_get(self, mock_ecrire, mock_lire):
+    def test_modifier_vehicule_get(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = [
             {"Mat": 1, "Immatriculation": "ABC123", "Vehicule": "Camion X"}
         ]
@@ -94,7 +108,7 @@ class VehiculeViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["Immatriculation"], "ABC123")
 
-    def test_modifier_vehicule_put(self, mock_ecrire, mock_lire):
+    def test_modifier_vehicule_put(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = [
             {"Mat": 1, "Immatriculation": "ABC123", "Vehicule": "Camion X"}
         ]
@@ -104,7 +118,7 @@ class VehiculeViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["Vehicule"], "Camion Y")
 
-    def test_modifier_vehicule_delete(self, mock_ecrire, mock_lire):
+    def test_modifier_vehicule_delete(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = [
             {"Mat": 1, "Immatriculation": "ABC123", "Vehicule": "Camion X"}
         ]
@@ -113,7 +127,7 @@ class VehiculeViewsTest(TestCase):
         response = modifier_vehicule(request, pk=1)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_modifier_vehicule_delete_all_by_immat(self, mock_ecrire, mock_lire):
+    def test_modifier_vehicule_delete_all_by_immat(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = [
             {"Mat": 1, "Immatriculation": "ABC123"},
             {"Mat": 2, "Immatriculation": "ABC123"},
@@ -128,14 +142,14 @@ class VehiculeViewsTest(TestCase):
         self.assertEqual(len(remaining), 1)
         self.assertEqual(remaining[0]["Mat"], 3)
 
-    def test_ajouter_vehicule(self, mock_ecrire, mock_lire):
+    def test_ajouter_vehicule(self, mock_ecrire, mock_lire, mock_mongo):
         mock_lire.return_value = []
         request = self.factory.post("/api/vehicules/ajouter/", {"Immatriculation": "NEW002"}, format="json")
         force_authenticate(request, user=self.user)
         response = ajouter_vehicule(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_ajouter_vehicule_invalid(self, mock_ecrire, mock_lire):
+    def test_ajouter_vehicule_invalid(self, mock_ecrire, mock_lire, mock_mongo):
         request = self.factory.post("/api/vehicules/ajouter/", {}, format="json")
         force_authenticate(request, user=self.user)
         response = ajouter_vehicule(request)
